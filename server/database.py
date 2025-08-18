@@ -202,29 +202,6 @@ init_db()
 
 # --- 1. 사용자 (User) API ---
 
-@app.post("/users/", status_code=status.HTTP_201_CREATED, summary="새로운 사용자 추가")
-def create_user(user: UserCreate):
-    """
-    새로운 사용자를 데이터베이스에 추가합니다.
-    - **name**: 사용자 이름 (필수)
-    - **date**: 가입 날짜 (필수, YYYY-MM-DD 형식)
-    - **grade**: 사용자 등급 (선택, 기본값 '브론즈')
-    """
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO user (name, date, grade) VALUES (?, ?, ?)",
-            (user.name, user.date, user.grade)
-        )
-        conn.commit()
-        new_id = cursor.lastrowid
-        return {"id": new_id, **user.dict()}
-    except sqlite3.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"사용자 추가 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
 @app.get("/users/", response_model=List[dict], summary="모든 사용자 정보 조회")
 def get_users():
     """
