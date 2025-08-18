@@ -47,8 +47,6 @@ nosetests.xml
 # 6. 로그 및 데이터베이스 파일 (Logs & Databases)
 # 개발 중 생성되는 로그 파일이나 로컬 테스트용 데이터베이스입니다.
 *.log
-*.db
-*.sqlite3
 
 # 7. OS 생성 파일 (OS Generated Files)
 .DS_Store
