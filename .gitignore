@@ -1,0 +1,55 @@
+# --- FastAPI Project .gitignore ---
+
+# 1. 가상 환경 (Virtual Environments)
+# 각 개발자의 로컬 환경에만 해당하며, 용량이 크고 OS에 따라 다를 수 있습니다.
+venv/
+.venv/
+env/
+.env/
+*env/
+*_env/
+
+# 2. 민감한 정보 및 환경 변수 (Secrets & Environment Variables)
+# API 키, 데이터베이스 비밀번호 등을 절대 Git에 올리면 안 됩니다.
+.env
+*.env
+*.env.*
+# 단, 환경 변수 예시 파일은 팀 공유를 위해 포함시킵니다.
+!*.env.example
+
+# 3. 파이썬 아티팩트 (Python Artifacts)
+# 컴파일된 바이트코드, 캐시 등 자동으로 생성되는 파일들입니다.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# 4. IDE 및 에디터 설정 (IDE & Editor Configurations)
+# 개인의 개발 환경 설정을 프로젝트에 포함시키지 않습니다.
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# 5. 테스트 및 커버리지 관련 파일 (Testing & Coverage)
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+nosetests.xml
+
+# 6. 로그 및 데이터베이스 파일 (Logs & Databases)
+# 개발 중 생성되는 로그 파일이나 로컬 테스트용 데이터베이스입니다.
+*.log
+*.db
+*.sqlite3
+
+# 7. OS 생성 파일 (OS Generated Files)
+.DS_Store
+Thumbs.db
