@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import Optional, List
 import datetime
+from dateutil.relativedelta import relativedelta
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
@@ -897,11 +898,13 @@ def purchase_product(request: PurchaseRequest):
             if existing_user_coupon:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"사용자 (ID: {request.user_id})는 이미 쿠폰 (ID: {coupon_id_to_grant})을(를) 보유하고 있습니다.")
 
-            today = datetime.date.today().isoformat()
-            end_date = (datetime.date.today() + datetime.timedelta(days=30)).isoformat()
+            # 오늘 날짜를 기준으로 6개월 뒤를 만료일로 설정합니다.
+            today = datetime.date.today()
+            end_date = (today + relativedelta(months=+6)).isoformat()
+            
             cursor.execute(
                 "INSERT INTO user_coupon (id, coupon_id, start_period, end_period, use_can, use_finish, finish_period) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                (request.user_id, coupon_id_to_grant, today, end_date, 1, 0, 0)
+                (request.user_id, coupon_id_to_grant, today.isoformat(), end_date, 1, 0, 0)
             )
         
         conn.commit()
