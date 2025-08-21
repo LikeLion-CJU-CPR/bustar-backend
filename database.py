@@ -206,7 +206,7 @@ def init_db():
             cursor.close()
             conn.close()
 
-# init_db()  # 필요할 때만 주석 해제하여 사용
+init_db()
 
 # --- 1. 사용자 (User) API ---
 
