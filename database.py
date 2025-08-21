@@ -210,7 +210,7 @@ init_db()
 
 # --- 1. 사용자 (User) API ---
 
-@app.get("/users/", response_model=List[dict], summary="모든 사용자 정보 조회")
+@app.get("/user/", response_model=List[dict], summary="모든 사용자 정보 조회")
 def get_users():
     conn = get_db_connection()
     try:
@@ -223,7 +223,7 @@ def get_users():
     finally:
         conn.close()
 
-@app.get("/users/{user_id}", response_model=dict, summary="특정 사용자 정보 조회")
+@app.get("/user/{user_id}", response_model=dict, summary="특정 사용자 정보 조회")
 def get_user(user_id: int):
     conn = get_db_connection()
     try:
@@ -238,7 +238,7 @@ def get_user(user_id: int):
     finally:
         conn.close()
 
-@app.put("/users/{user_id}", summary="특정 사용자 정보 업데이트")
+@app.put("/user/{user_id}", summary="특정 사용자 정보 업데이트")
 def update_user(user_id: int, user_update: UserUpdate):
     conn = get_db_connection()
     try:
@@ -271,7 +271,7 @@ def update_user(user_id: int, user_update: UserUpdate):
     finally:
         conn.close()
 
-@app.delete("/users/{user_id}", summary="특정 사용자 정보 삭제")
+@app.delete("/user/{user_id}", summary="특정 사용자 정보 삭제")
 def delete_user(user_id: int):
     conn = get_db_connection()
     try:
@@ -288,7 +288,7 @@ def delete_user(user_id: int):
 
 # --- 2. 쿠폰 (Coupon) API ---
 
-@app.post("/coupons/", status_code=status.HTTP_201_CREATED, summary="새로운 쿠폰 추가")
+@app.post("/coupon/", status_code=status.HTTP_201_CREATED, summary="새로운 쿠폰 추가")
 def create_coupon(coupon: CouponCreate):
     conn = get_db_connection()
     try:
@@ -305,7 +305,7 @@ def create_coupon(coupon: CouponCreate):
     finally:
         conn.close()
 
-@app.get("/coupons/", response_model=List[dict], summary="모든 쿠폰 정보 조회")
+@app.get("/coupon/", response_model=List[dict], summary="모든 쿠폰 정보 조회")
 def get_coupons():
     conn = get_db_connection()
     try:
@@ -318,7 +318,7 @@ def get_coupons():
     finally:
         conn.close()
 
-@app.get("/coupons/{coupon_id}", response_model=dict, summary="특정 쿠폰 정보 조회")
+@app.get("/coupon/{coupon_id}", response_model=dict, summary="특정 쿠폰 정보 조회")
 def get_coupon(coupon_id: int):
     conn = get_db_connection()
     try:
@@ -333,7 +333,7 @@ def get_coupon(coupon_id: int):
     finally:
         conn.close()
 
-@app.put("/coupons/{coupon_id}", summary="특정 쿠폰 정보 업데이트")
+@app.put("/coupon/{coupon_id}", summary="특정 쿠폰 정보 업데이트")
 def update_coupon(coupon_id: int, coupon_update: CouponUpdate):
     conn = get_db_connection()
     try:
@@ -372,7 +372,7 @@ def update_coupon(coupon_id: int, coupon_update: CouponUpdate):
     finally:
         conn.close()
 
-@app.delete("/coupons/{coupon_id}", summary="특정 쿠폰 정보 삭제")
+@app.delete("/coupon/{coupon_id}", summary="특정 쿠폰 정보 삭제")
 def delete_coupon(coupon_id: int):
     conn = get_db_connection()
     try:
@@ -389,7 +389,7 @@ def delete_coupon(coupon_id: int):
 
 # --- 3. 최근 이동 경로 (RecentMove) API ---
 
-@app.post("/recent_moves/", status_code=status.HTTP_201_CREATED, summary="새로운 최근 이동 경로 추가")
+@app.post("/recent_move/", status_code=status.HTTP_201_CREATED, summary="새로운 최근 이동 경로 추가")
 def create_recent_move(route: RecentMoveCreate):
     conn = get_db_connection()
     try:
@@ -411,7 +411,7 @@ def create_recent_move(route: RecentMoveCreate):
     finally:
         conn.close()
 
-@app.get("/recent_moves/", response_model=List[dict], summary="모든 최근 이동 경로 조회")
+@app.get("/recent_move/", response_model=List[dict], summary="모든 최근 이동 경로 조회")
 def get_recent_moves():
     conn = get_db_connection()
     try:
@@ -424,7 +424,7 @@ def get_recent_moves():
     finally:
         conn.close()
 
-@app.get("/recent_moves/{root_id}", response_model=dict, summary="특정 최근 이동 경로 조회")
+@app.get("/recent_move/{root_id}", response_model=dict, summary="특정 최근 이동 경로 조회")
 def get_recent_move(root_id: int):
     conn = get_db_connection()
     try:
@@ -439,7 +439,7 @@ def get_recent_move(root_id: int):
     finally:
         conn.close()
 
-@app.put("/recent_moves/{root_id}", summary="특정 최근 이동 경로 업데이트")
+@app.put("/recent_move/{root_id}", summary="특정 최근 이동 경로 업데이트")
 def update_recent_move(root_id: int, route_update: RecentMoveUpdate):
     conn = get_db_connection()
     try:
@@ -476,7 +476,7 @@ def update_recent_move(root_id: int, route_update: RecentMoveUpdate):
     finally:
         conn.close()
 
-@app.delete("/recent_moves/{root_id}", summary="특정 최근 이동 경로 삭제")
+@app.delete("/recent_move/{root_id}", summary="특정 최근 이동 경로 삭제")
 def delete_recent_move(root_id: int):
     conn = get_db_connection()
     try:
@@ -493,7 +493,7 @@ def delete_recent_move(root_id: int):
 
 # --- 4. 나의 통계 (UsageRecord) API ---
 
-@app.post("/usage_records/", status_code=status.HTTP_201_CREATED, summary="새로운 통계 정보 추가")
+@app.post("/usage_record/", status_code=status.HTTP_201_CREATED, summary="새로운 통계 정보 추가")
 def create_usage_record(stats: UsageRecordCreate):
     conn = get_db_connection()
     try:
@@ -519,7 +519,7 @@ def create_usage_record(stats: UsageRecordCreate):
     finally:
         conn.close()
 
-@app.get("/usage_records/", response_model=List[dict], summary="모든 통계 정보 조회")
+@app.get("/usage_record/", response_model=List[dict], summary="모든 통계 정보 조회")
 def get_all_usage_records():
     conn = get_db_connection()
     try:
@@ -532,7 +532,7 @@ def get_all_usage_records():
     finally:
         conn.close()
 
-@app.get("/usage_records/{user_id}", response_model=dict, summary="특정 사용자의 통계 정보 조회")
+@app.get("/usage_record/{user_id}", response_model=dict, summary="특정 사용자의 통계 정보 조회")
 def get_usage_record(user_id: int):
     conn = get_db_connection()
     try:
@@ -547,7 +547,7 @@ def get_usage_record(user_id: int):
     finally:
         conn.close()
 
-@app.put("/usage_records/{user_id}", summary="특정 사용자의 통계 정보 업데이트")
+@app.put("/usage_record/{user_id}", summary="특정 사용자의 통계 정보 업데이트")
 def update_usage_record(user_id: int, stats_update: UsageRecordUpdate):
     conn = get_db_connection()
     try:
@@ -580,7 +580,7 @@ def update_usage_record(user_id: int, stats_update: UsageRecordUpdate):
     finally:
         conn.close()
 
-@app.delete("/usage_records/{user_id}", summary="특정 사용자의 통계 정보 삭제")
+@app.delete("/usage_record/{user_id}", summary="특정 사용자의 통계 정보 삭제")
 def delete_usage_record(user_id: int):
     conn = get_db_connection()
     try:
@@ -597,7 +597,7 @@ def delete_usage_record(user_id: int):
 
 # --- 5. 포인트 (Point) API ---
 
-@app.post("/points/", status_code=status.HTTP_201_CREATED, summary="새로운 포인트 정보 추가")
+@app.post("/point/", status_code=status.HTTP_201_CREATED, summary="새로운 포인트 정보 추가")
 def create_point(point_data: PointCreate):
     conn = get_db_connection()
     try:
@@ -630,7 +630,7 @@ def create_point(point_data: PointCreate):
     finally:
         conn.close()
 
-@app.get("/points/", response_model=List[dict], summary="모든 포인트 정보 조회")
+@app.get("/point/", response_model=List[dict], summary="모든 포인트 정보 조회")
 def get_all_points():
     conn = get_db_connection()
     try:
@@ -643,7 +643,7 @@ def get_all_points():
     finally:
         conn.close()
 
-@app.get("/points/{user_id}", response_model=dict, summary="특정 사용자의 포인트 정보 조회")
+@app.get("/point/{user_id}", response_model=dict, summary="특정 사용자의 포인트 정보 조회")
 def get_point(user_id: int):
     conn = get_db_connection()
     try:
@@ -658,7 +658,7 @@ def get_point(user_id: int):
     finally:
         conn.close()
 
-@app.put("/points/{user_id}", summary="특정 사용자의 포인트 정보 업데이트")
+@app.put("/point/{user_id}", summary="특정 사용자의 포인트 정보 업데이트")
 def update_point(user_id: int, point_update: PointUpdate):
     conn = get_db_connection()
     try:
@@ -710,7 +710,7 @@ def update_point(user_id: int, point_update: PointUpdate):
     finally:
         conn.close()
 
-@app.delete("/points/{user_id}", summary="특정 사용자의 포인트 정보 삭제")
+@app.delete("/point/{user_id}", summary="특정 사용자의 포인트 정보 삭제")
 def delete_point(user_id: int):
     conn = get_db_connection()
     try:
@@ -727,7 +727,7 @@ def delete_point(user_id: int):
 
 # --- 6. 사용자 쿠폰 (UserCoupon) API ---
 
-@app.post("/user_coupons/", status_code=status.HTTP_201_CREATED, summary="새로운 사용자 쿠폰 매핑 추가")
+@app.post("/user_coupon/", status_code=status.HTTP_201_CREATED, summary="새로운 사용자 쿠폰 매핑 추가")
 def create_user_coupon(user_coupon_data: UserCouponCreate):
     conn = get_db_connection()
     try:
@@ -764,7 +764,7 @@ def create_user_coupon(user_coupon_data: UserCouponCreate):
     finally:
         conn.close()
 
-@app.get("/user_coupons/", response_model=List[dict], summary="모든 사용자 쿠폰 정보 조회")
+@app.get("/user_coupon/", response_model=List[dict], summary="모든 사용자 쿠폰 정보 조회")
 def get_all_user_coupons():
     conn = get_db_connection()
     try:
@@ -777,7 +777,7 @@ def get_all_user_coupons():
     finally:
         conn.close()
 
-@app.get("/user_coupons/{user_id}/{coupon_id}", response_model=dict, summary="특정 사용자의 특정 쿠폰 정보 조회")
+@app.get("/user_coupon/{user_id}/{coupon_id}", response_model=dict, summary="특정 사용자의 특정 쿠폰 정보 조회")
 def get_user_coupon(user_id: int, coupon_id: int):
     conn = get_db_connection()
     try:
@@ -795,7 +795,7 @@ def get_user_coupon(user_id: int, coupon_id: int):
     finally:
         conn.close()
 
-@app.put("/user_coupons/{user_id}/{coupon_id}", summary="특정 사용자의 특정 쿠폰 정보 업데이트")
+@app.put("/user_coupon/{user_id}/{coupon_id}", summary="특정 사용자의 특정 쿠폰 정보 업데이트")
 def update_user_coupon(user_id: int, coupon_id: int, user_coupon_update: UserCouponUpdate):
     conn = get_db_connection()
     try:
@@ -834,7 +834,7 @@ def update_user_coupon(user_id: int, coupon_id: int, user_coupon_update: UserCou
     finally:
         conn.close()
 
-@app.delete("/user_coupons/{user_id}/{coupon_id}", summary="특정 사용자의 특정 쿠폰 정보 삭제")
+@app.delete("/user_coupon/{user_id}/{coupon_id}", summary="특정 사용자의 특정 쿠폰 정보 삭제")
 def delete_user_coupon(user_id: int, coupon_id: int):
     conn = get_db_connection()
     try:
