@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import Optional, List
 import datetime
+import mysql.connector
 from dotenv import load_dotenv
 import os
 
@@ -161,14 +162,14 @@ def init_db():
         )
         """)
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS usage_record (
+        cursor.execute("""CREATE TABLE IF NOT EXISTS usage_record (
             id INT PRIMARY KEY,
             total_use INT NOT NULL,
             month_use INT NOT NULL,
             saved INT NOT NULL,
             FOREIGN KEY(id) REFERENCES user(id) ON DELETE CASCADE
         )
+        
         """)
 
         cursor.execute("""
