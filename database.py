@@ -209,7 +209,7 @@ def init_db():
             cursor.close()
             conn.close()
 
-init_db()
+#init_db()
 
 # --- 1. 사용자 (User) API ---
 
@@ -241,72 +241,7 @@ def get_user(user_id: int):
     finally:
         conn.close()
 
-@app.put("/user/{user_id}", summary="특정 사용자 정보 업데이트")
-def update_user(user_id: int, user_update: UserUpdate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        set_clauses = []
-        params = []
-        if user_update.name is not None:
-            set_clauses.append("name = %s")
-            params.append(user_update.name)
-        if user_update.date is not None:
-            set_clauses.append("date = %s")
-            params.append(user_update.date)
-        if user_update.grade is not None:
-            set_clauses.append("grade = %s")
-            params.append(user_update.grade)
-
-        if not set_clauses:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="업데이트할 내용이 없습니다.")
-
-        params.append(user_id)
-        query = f"UPDATE user SET {', '.join(set_clauses)} WHERE id = %s"
-        cursor.execute(query, params)
-        conn.commit()
-
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="사용자를 찾을 수 없습니다.")
-        return {"message": "사용자 정보가 성공적으로 업데이트되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"사용자 업데이트 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.delete("/user/{user_id}", summary="특정 사용자 정보 삭제")
-def delete_user(user_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM user WHERE id = %s", (user_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="사용자를 찾을 수 없습니다.")
-        return {"message": "사용자가 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"사용자 삭제 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
 # --- 2. 쿠폰 (Coupon) API ---
-
-@app.post("/coupon/", status_code=status.HTTP_201_CREATED, summary="새로운 쿠폰 추가")
-def create_coupon(coupon: CouponCreate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO coupon (coupon_name, coupon_price, coupon_discount, coupon_affiliate, coupon_period) VALUES (%s, %s, %s, %s, %s)",
-            (coupon.coupon_name, coupon.coupon_price, coupon.coupon_discount, coupon.coupon_affiliate, coupon.coupon_period)
-        )
-        conn.commit()
-        coupon_id = cursor.lastrowid
-        return {"coupon_id": coupon_id, **coupon.dict()}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"쿠폰 추가 중 오류 발생: {e}")
-    finally:
-        conn.close()
 
 @app.get("/coupon/", response_model=List[dict], summary="모든 쿠폰 정보 조회")
 def get_coupons():
@@ -336,191 +271,10 @@ def get_coupon(coupon_id: int):
     finally:
         conn.close()
 
-@app.put("/coupon/{coupon_id}", summary="특정 쿠폰 정보 업데이트")
-def update_coupon(coupon_id: int, coupon_update: CouponUpdate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        set_clauses = []
-        params = []
-        if coupon_update.coupon_name is not None:
-            set_clauses.append("coupon_name = %s")
-            params.append(coupon_update.coupon_name)
-        if coupon_update.coupon_price is not None:
-            set_clauses.append("coupon_price = %s")
-            params.append(coupon_update.coupon_price)
-        if coupon_update.coupon_discount is not None:
-            set_clauses.append("coupon_discount = %s")
-            params.append(coupon_update.coupon_discount)
-        if coupon_update.coupon_affiliate is not None:
-            set_clauses.append("coupon_affiliate = %s")
-            params.append(coupon_update.coupon_affiliate)
-        if coupon_update.coupon_period is not None:
-            set_clauses.append("coupon_period = %s")
-            params.append(coupon_update.coupon_period)
-
-        if not set_clauses:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="업데이트할 내용이 없습니다.")
-
-        params.append(coupon_id)
-        query = f"UPDATE coupon SET {', '.join(set_clauses)} WHERE coupon_id = %s"
-        cursor.execute(query, params)
-        conn.commit()
-
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="쿠폰을 찾을 수 없습니다.")
-        return {"message": "쿠폰 정보가 성공적으로 업데이트되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"쿠폰 업데이트 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.delete("/coupon/{coupon_id}", summary="특정 쿠폰 정보 삭제")
-def delete_coupon(coupon_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM coupon WHERE coupon_id = %s", (coupon_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="쿠폰을 찾을 수 없습니다.")
-        return {"message": "쿠폰이 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"쿠폰 삭제 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-# --- 3. 최근 이동 경로 (RecentMove) API ---
-
-@app.post("/recent_move/", status_code=status.HTTP_201_CREATED, summary="새로운 최근 이동 경로 추가")
-def create_recent_move(route: RecentMoveCreate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM user WHERE id = %s", (route.member_id,))
-        user_exists = cursor.fetchone()
-        if not user_exists:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="유효하지 않은 member_id 입니다. 먼저 사용자를 생성하세요.")
-
-        cursor.execute(
-            "INSERT INTO recent_move (member_id, origin, destination) VALUES (%s, %s, %s)",
-            (route.member_id, route.origin, route.destination)
-        )
-        conn.commit()
-        root_id = cursor.lastrowid
-        return {"root_id": root_id, **route.dict()}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"최근 이동 경로 추가 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.get("/recent_move/", response_model=List[dict], summary="모든 최근 이동 경로 조회")
-def get_recent_moves():
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM recent_move")
-        rows = cursor.fetchall()
-        return rows
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"최근 이동 경로 조회 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.get("/recent_move/{root_id}", response_model=dict, summary="특정 최근 이동 경로 조회")
-def get_recent_move(root_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM recent_move WHERE root_id = %s", (root_id,))
-        route = cursor.fetchone()
-        if route is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="최근 이동 경로를 찾을 수 없습니다.")
-        return route
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"최근 이동 경로 조회 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.put("/recent_move/{root_id}", summary="특정 최근 이동 경로 업데이트")
-def update_recent_move(root_id: int, route_update: RecentMoveUpdate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        set_clauses = []
-        params = []
-        if route_update.member_id is not None:
-            cursor.execute("SELECT 1 FROM user WHERE id = %s", (route_update.member_id,))
-            user_exists = cursor.fetchone()
-            if not user_exists:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="유효하지 않은 member_id 입니다.")
-            set_clauses.append("member_id = %s")
-            params.append(route_update.member_id)
-        if route_update.origin is not None:
-            set_clauses.append("origin = %s")
-            params.append(route_update.origin)
-        if route_update.destination is not None:
-            set_clauses.append("destination = %s")
-            params.append(route_update.destination)
-
-        if not set_clauses:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="업데이트할 내용이 없습니다.")
-
-        params.append(root_id)
-        query = f"UPDATE recent_move SET {', '.join(set_clauses)} WHERE root_id = %s"
-        cursor.execute(query, params)
-        conn.commit()
-
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="최근 이동 경로를 찾을 수 없습니다.")
-        return {"message": "최근 이동 경로 정보가 성공적으로 업데이트되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"최근 이동 경로 업데이트 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.delete("/recent_move/{root_id}", summary="특정 최근 이동 경로 삭제")
-def delete_recent_move(root_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM recent_move WHERE root_id = %s", (root_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="최근 이동 경로를 찾을 수 없습니다.")
-        return {"message": "최근 이동 경로가 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"최근 이동 경로 삭제 중 오류 발생: {e}")
-    finally:
-        conn.close()
 
 # --- 4. 나의 통계 (UsageRecord) API ---
 
-@app.post("/usage_record/", status_code=status.HTTP_201_CREATED, summary="새로운 통계 정보 추가")
-def create_usage_record(stats: UsageRecordCreate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT 1 FROM user WHERE id = %s", (stats.id,))
-        user_exists = cursor.fetchone()
-        if not user_exists:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="유효하지 않은 user_id 입니다. 먼저 사용자를 생성하세요.")
 
-        cursor.execute("SELECT 1 FROM usage_record WHERE id = %s", (stats.id,))
-        existing_stats = cursor.fetchone()
-        if existing_stats:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="해당 사용자 ID의 통계 정보가 이미 존재합니다. PUT을 사용해 업데이트하세요.")
-
-        cursor.execute(
-            "INSERT INTO usage_record (id, total_use, month_use, saved) VALUES (%s, %s, %s, %s)",
-            (stats.id, stats.total_use, stats.month_use, stats.saved)
-        )
-        conn.commit()
-        return stats.dict()
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"통계 추가 중 오류 발생: {e}")
-    finally:
-        conn.close()
 
 @app.get("/usage_record/", response_model=List[dict], summary="모든 통계 정보 조회")
 def get_all_usage_records():
@@ -547,54 +301,6 @@ def get_usage_record(user_id: int):
         return stats
     except mysql.connector.Error as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"통계 조회 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.put("/usage_record/{user_id}", summary="특정 사용자의 통계 정보 업데이트")
-def update_usage_record(user_id: int, stats_update: UsageRecordUpdate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        set_clauses = []
-        params = []
-        if stats_update.total_use is not None:
-            set_clauses.append("total_use = %s")
-            params.append(stats_update.total_use)
-        if stats_update.month_use is not None:
-            set_clauses.append("month_use = %s")
-            params.append(stats_update.month_use)
-        if stats_update.saved is not None:
-            set_clauses.append("saved = %s")
-            params.append(stats_update.saved)
-
-        if not set_clauses:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="업데이트할 내용이 없습니다.")
-
-        params.append(user_id)
-        query = f"UPDATE usage_record SET {', '.join(set_clauses)} WHERE id = %s"
-        cursor.execute(query, params)
-        conn.commit()
-
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="통계 정보를 찾을 수 없습니다.")
-        return {"message": "통계 정보가 성공적으로 업데이트되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"통계 업데이트 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
-@app.delete("/usage_record/{user_id}", summary="특정 사용자의 통계 정보 삭제")
-def delete_usage_record(user_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM usage_record WHERE id = %s", (user_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="통계 정보를 찾을 수 없습니다.")
-        return {"message": "통계 정보가 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"통계 삭제 중 오류 발생: {e}")
     finally:
         conn.close()
 
@@ -713,59 +419,7 @@ def update_point(user_id: int, point_update: PointUpdate):
     finally:
         conn.close()
 
-@app.delete("/point/{user_id}", summary="특정 사용자의 포인트 정보 삭제")
-def delete_point(user_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM point WHERE id = %s", (user_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="포인트 정보를 찾을 수 없습니다.")
-        return {"message": "포인트 정보가 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"포인트 삭제 중 오류 발생: {e}")
-    finally:
-        conn.close()
-
 # --- 6. 사용자 쿠폰 (UserCoupon) API ---
-
-@app.post("/user_coupon/", status_code=status.HTTP_201_CREATED, summary="새로운 사용자 쿠폰 매핑 추가")
-def create_user_coupon(user_coupon_data: UserCouponCreate):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT 1 FROM user WHERE id = %s", (user_coupon_data.id,))
-        user_exists = cursor.fetchone()
-        cursor.execute("SELECT 1 FROM coupon WHERE coupon_id = %s", (user_coupon_data.coupon_id,))
-        coupon_exists = cursor.fetchone()
-        
-        if not user_exists:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="유효하지 않은 user_id 입니다. 먼저 사용자를 생성하세요.")
-        if not coupon_exists:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="유효하지 않은 coupon_id 입니다. 먼저 쿠폰을 생성하세요.")
-
-        cursor.execute(
-            "SELECT 1 FROM user_coupon WHERE id = %s AND coupon_id = %s",
-            (user_coupon_data.id, user_coupon_data.coupon_id)
-        )
-        existing_user_coupon = cursor.fetchone()
-        if existing_user_coupon:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="해당 사용자에게 이미 할당된 쿠폰입니다. PUT을 사용해 업데이트하거나 새로운 쿠폰 ID를 사용하세요.")
-
-        cursor.execute(
-            "INSERT INTO user_coupon (id, coupon_id, start_period, end_period, use_can, use_finish, finish_period) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-            (user_coupon_data.id, user_coupon_data.coupon_id, user_coupon_data.start_period,
-             user_coupon_data.end_period, user_coupon_data.use_can,
-             user_coupon_data.use_finish, user_coupon_data.finish_period)
-        )
-        conn.commit()
-        return user_coupon_data.dict()
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"사용자 쿠폰 추가 중 오류 발생: {e}")
-    finally:
-        conn.close()
 
 @app.get("/user_coupon/", response_model=List[dict], summary="모든 사용자 쿠폰 정보 조회")
 def get_all_user_coupons():
@@ -837,23 +491,6 @@ def update_user_coupon(user_id: int, coupon_id: int, user_coupon_update: UserCou
     finally:
         conn.close()
 
-@app.delete("/user_coupon/{user_id}/{coupon_id}", summary="특정 사용자의 특정 쿠폰 정보 삭제")
-def delete_user_coupon(user_id: int, coupon_id: int):
-    conn = get_db_connection()
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            "DELETE FROM user_coupon WHERE id = %s AND coupon_id = %s",
-            (user_id, coupon_id)
-        )
-        conn.commit()
-        if cursor.rowcount == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="사용자 쿠폰을 찾을 수 없습니다.")
-        return {"message": "사용자 쿠폰 정보가 성공적으로 삭제되었습니다."}
-    except mysql.connector.Error as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"사용자 쿠폰 삭제 중 오류 발생: {e}")
-    finally:
-        conn.close()
 
 # --- 7. 상품 구매 (Product Purchase) API ---
 
