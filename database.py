@@ -1,9 +1,9 @@
-import mysql.connector
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import Optional, List
 import datetime
-from dateutil.relativedelta import relativedelta
+from dotenv import load_dotenv
+import os
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
@@ -12,12 +12,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
+load_dotenv()
+
 # --- MySQL DB 연결 정보 설정 ---
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',  # 자신의 MySQL 사용자 이름으로 변경
-    'password': '1234',  # 자신의 MySQL 비밀번호로 변경
-    'database': 'mydb'  # 사용할 데이터베이스 이름으로 변경
+    'host': os.environ.get('DB_HOST'),
+    'user': os.environ.get('DB_USER'),  # 자신의 MySQL 사용자 이름으로 변경
+    'password': os.environ.get('DB_PASSWORD'),  # 자신의 MySQL 비밀번호로 변경
+    'database': os.environ.get('DB_NAME')  # 사용할 데이터베이스 이름으로 변경
 }
 
 # --- Pydantic 모델 정의 (변화 없음) ---
