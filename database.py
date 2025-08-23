@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 import datetime
 import mysql.connector
+from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 import os
 
@@ -19,7 +20,7 @@ load_dotenv()
 DB_CONFIG = {
     'host': os.environ.get('DB_HOST'),
     'user': os.environ.get('DB_USER'),  # 자신의 MySQL 사용자 이름으로 변경
-    'password': os.environ.get('DB_PASSWORD'),  # 자신의 MySQL 비밀번호로 변경
+    'password':os.environ.get('DB_PASSWORD'),  # 자신의 MySQL 비밀번호로 변경
     'database': os.environ.get('DB_NAME')  # 사용할 데이터베이스 이름으로 변경
 }
 
@@ -105,6 +106,8 @@ class PurchaseRequest(BaseModel):
 
 # --- DB 연결 헬퍼 함수 ---
 def get_db_connection():
+    print("DEBUG: DB_USER is", DB_CONFIG["user"])
+    print("DEBUG: DB_PASSWORD is", DB_CONFIG["password"])
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
         return conn
