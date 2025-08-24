@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 # from db.session import init_db
-from api import user, coupon, usage_record, point, user_coupon, purchase, bus, stations, bus_routes, bus_time
+from api import user, coupon, usage_record, point, user_coupon, purchase, bus_routes, bus_times, bus, stations
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
@@ -21,10 +21,10 @@ app.include_router(usage_record.router, tags=["Usage Record"], prefix="/api")
 app.include_router(point.router, tags=["Point"], prefix="/api")
 app.include_router(user_coupon.router, tags=["User Coupon"], prefix="/api")
 app.include_router(purchase.router, tags=["Purchase"], prefix="/api")
-app.include_router(bus_routes.router, tags=["bus-routes"], prefix="/api")
-app.include_router(bus_time.router, tags=["bus-time"], prefix="/api")
-app.include_router(purchase.router, tags=["bus"], prefix="/api")
-app.include_router(purchase.router, tags=["stations"], prefix="/api")
+app.include_router(bus_routes.router, tags=["bus_routes"], prefix="/api")
+app.include_router(bus_times.router, tags=["bus_time"], prefix="/api")
+app.include_router(bus.router, tags=["bus"], prefix="/api")
+app.include_router(stations.router, tags=["stations"], prefix="/api")
 
 @app.get("/", tags=["Root"])
 async def read_root():
