@@ -109,6 +109,45 @@ def init_db():
         )
         """)
 
+        cursor.execute("""
+        CREATE TABLE bus (
+            bus_number INT NOT NULL,    
+            bus_type VARCHAR(50) NOT NULL,
+            PRIMARY KEY (bus_number)
+        );
+        """)
+
+        cursor.execute("""
+        CREATE TABLE station (
+            station_number INT NOT NULL,             
+            station_name VARCHAR(50) NOT NULL,   
+            PRIMARY KEY (station_number)
+        );
+        """)
+
+        cursor.execute("""
+        CREATE TABLE bus_route (
+            bus_number INT NOT NULL,
+            direction ENUM('up', 'down') NOT NULL, -- 'up': 상행, 'down': 하행
+            station_number INT NOT NULL,
+            station_order INT NOT NULL,
+            PRIMARY KEY (bus_number, direction, station_order),
+            FOREIGN KEY (bus_number) REFERENCES bus(bus_number) ON DELETE CASCADE,
+            FOREIGN KEY (station_number) REFERENCES station(station_number) ON DELETE CASCADE
+        );
+        """)
+
+        cursor.execute("""
+        CREATE TABLE bus_time (
+            bus_number INT NOT NULL,
+            direction ENUM('up', 'down') NOT NULL, -- 'up': 상행, 'down': 하행
+            start_time TIME NOT NULL,
+            arrive_time TIME NOT NULL,
+            PRIMARY KEY (bus_number, start_time, direction),
+            FOREIGN KEY (bus_number) REFERENCES bus(bus_number) ON DELETE CASCADE
+        );
+        """)
+
         cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
         conn.commit()
         print("데이터베이스 초기화 및 테이블 생성이 완료되었습니다.")
