@@ -5,7 +5,7 @@ from db.session import get_db_connection
 
 router = APIRouter()
 
-@router.get("/bus-times/", response_model=Dict[int, List[dict]], summary="모든 버스 시간표 조회")
+@router.get("/bus_times/", response_model=Dict[int, List[dict]], summary="모든 버스 시간표 조회")
 def get_all_bus_times():
     conn = get_db_connection()
     try:
@@ -40,7 +40,7 @@ def get_all_bus_times():
         conn.close()
 
 # 추가: 버스 시간표 조회 엔드포인트
-@router.get("/bus-times/{bus_number}", response_model=List[dict], summary="특정 버스 시간표 조회")
+@router.get("/bus_times/{bus_number}", response_model=List[dict], summary="특정 버스 시간표 조회")
 def get_bus_times(bus_number: int):
     conn = get_db_connection()
     try:
