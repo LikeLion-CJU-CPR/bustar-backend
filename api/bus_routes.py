@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from typing import List
+from typing import List, Dict
 import mysql.connector
 from db.session import get_db_connection
 
