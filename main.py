@@ -21,6 +21,10 @@ app.include_router(usage_record.router, tags=["Usage Record"], prefix="/api")
 app.include_router(point.router, tags=["Point"], prefix="/api")
 app.include_router(user_coupon.router, tags=["User Coupon"], prefix="/api")
 app.include_router(purchase.router, tags=["Purchase"], prefix="/api")
+app.include_router(purchase.router, tags=["bus-routes"], prefix="/api")
+app.include_router(purchase.router, tags=["bus-time"], prefix="/api")
+app.include_router(purchase.router, tags=["bus"], prefix="/api")
+app.include_router(purchase.router, tags=["stations"], prefix="/api")
 
 @app.get("/", tags=["Root"])
 async def read_root():
